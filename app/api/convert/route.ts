@@ -35,6 +35,9 @@ export async function GET(request: Request) {
 
   return new Response(providers, {
     status: 200,
-    headers: { "Content-Type": "application/x-yaml; charset=utf-8" },
+    headers: {
+      "Content-Type": "application/x-yaml; charset=utf-8",
+      "Content-Disposition": `attachment; filename="proxies.yaml"`,
+    },
   });
 }
