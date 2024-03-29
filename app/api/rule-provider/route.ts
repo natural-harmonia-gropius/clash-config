@@ -1,18 +1,18 @@
 export const runtime = "edge";
 
 export async function GET(request: Request) {
-  let rule = new URL(request.url).searchParams.get("rule");
-  if (!rule) return new Response("Missing parameter: rule", { status: 400 });
+  let hash = new URL(request.url).hash.replace(/^#/, "");
+  if (!hash) return new Response("Missing URL hash", { status: 400 });
 
   let rules = new Blob();
   try {
     rules = await (
       await fetch(
-        `https://github.com/Loyalsoldier/clash-rules/raw/release/${rule}.txt`
+        `https://github.com/Loyalsoldier/clash-rules/raw/release/${hash}.txt`
       )
     ).blob();
   } catch (e) {
-    return new Response(`Unable to fetch rule ${rule}\n\n${e}`, {
+    return new Response(`Unable to fetch rule ${hash}\n\n${e}`, {
       status: 400,
     });
   }
