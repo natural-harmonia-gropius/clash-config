@@ -12,8 +12,7 @@ export async function GET(request: Request) {
     yaml = await (
       await fetch(url, {
         headers: {
-          "User-Agent":
-            "ClashX Pro/1.97.0.4 (com.west2online.ClashXPro; build:1.97.0.4; macOS 14.0.0) Alamofire/5.9.0",
+          "User-Agent": "ClashX Pro/1.97.0.4",
         },
       })
     ).text();
