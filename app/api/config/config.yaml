@@ -1,0 +1,86 @@
+external-controller: localhost:9090
+external-ui: dashboard
+
+mixed-port: 1080
+ipv6: true
+allow-lan: false
+mode: rule
+
+# tun:
+#   enable: true
+#   stack: system
+#   auto-route: true
+#   auto-redir: true
+#   auto-detect-interface: true
+
+# dns:
+#   enable: true
+#   listen: localhost:53
+#   ipv6: true
+#   default-nameserver:
+#     - "[2402:4e00::]:53"
+#     - 119.29.29.29
+#   nameserver:
+#     - https://doh.pub/dns-query
+#     - https://dns.alidns.com/dns-query
+#   fallback:
+#     - https://cloudflare-dns.com/dns-query
+#     - https://dns.google/dns-query
+
+proxy-providers:
+  proxy:
+    type: http
+    url: https://example.com
+    path: ./proxies/proxy.yaml
+    interval: 43200
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 3600
+
+rule-providers:
+  direct:
+    type: http
+    behavior: domain
+    url: https://example.com
+    path: ./rules/direct.yaml
+    interval: 86400
+  reject:
+    type: http
+    behavior: domain
+    url: https://example.com
+    path: ./rules/reject.yaml
+    interval: 86400
+  gfw:
+    type: http
+    behavior: domain
+    url: https://example.com
+    path: ./rules/gfw.yaml
+    interval: 86400
+  proxy:
+    type: http
+    behavior: domain
+    url: https://example.com
+    path: ./rules/proxy.yaml
+    interval: 86400
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    use:
+      - proxy
+
+rules:
+  - DOMAIN,clash.razord.top,DIRECT
+  - DOMAIN,yacd.haishan.me,DIRECT
+  - DOMAIN-KEYWORD,torrent,DIRECT
+
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,reject,REJECT
+  - RULE-SET,gfw,PROXY
+  - RULE-SET,proxy,PROXY
+
+  - MATCH,PROXY
