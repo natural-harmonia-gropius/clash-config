@@ -1,5 +1,3 @@
-import { promises as fs } from "fs";
-import { join } from "path";
 import YAML from "yaml";
 
 export const runtime = "edge";
@@ -13,17 +11,18 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   try {
-    // 提取主机名
-    const host = url.hostname;
+    // 从 public 目录中读取 config.yaml 文件
+    const baseURL = `${url.protocol}//${url.hostname}`;
+    const configURL = `${baseURL}/config.yaml`;
+    const response = await fetch(configURL);
 
-    // 构建 base URL
-    const baseURL = `${url.protocol}//${host}`;
+    if (!response.ok) {
+      return new Response(`Failed to fetch config.yaml`, {
+        status: response.status,
+      });
+    }
 
-    // 文件路径为当前目录下的 config.yaml
-    const filePath = join(process.cwd(), "app", "api", "config", "config.yaml");
-    const yamlContent = await fs.readFile(filePath, "utf-8");
-
-    // 解析 YAML 内容
+    const yamlContent = await response.text();
     const config = YAML.parse(yamlContent);
 
     // 替换 URL
