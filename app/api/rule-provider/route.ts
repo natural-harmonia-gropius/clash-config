@@ -1,27 +1,39 @@
 export const runtime = "edge";
 
-export async function GET(request: Request) {
-  let rule = new URL(request.url).searchParams.get("rule");
-  if (!rule) return new Response("Missing parameter: rule", { status: 400 });
+export async function GET(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const rule = url.searchParams.get("rule");
 
-  let rules = new Blob();
-  try {
-    rules = await (
-      await fetch(
-        `https://github.com/Loyalsoldier/clash-rules/raw/release/${rule}.txt`
-      )
-    ).blob();
-  } catch (e) {
-    return new Response(`Unable to fetch rule ${rule}\n\n${e}`, {
-      status: 400,
-    });
+  if (!rule) {
+    return new Response("Missing parameter: rule", { status: 400 });
   }
 
-  return new Response(rules, {
-    status: 200,
-    headers: {
-      "Content-Type": "application/x-yaml; charset=utf-8",
-      "Content-Disposition": `attachment; filename="rules.yaml"`,
-    },
-  });
+  try {
+    const response = await fetch(
+      `https://github.com/Loyalsoldier/clash-rules/releases/latest/download/${rule}.txt`
+    );
+
+    if (!response.ok) {
+      return new Response(`Failed to fetch ${rule}.txt`, {
+        status: response.status,
+      });
+    }
+
+    const rulesBlob = await response.blob();
+
+    return new Response(rulesBlob, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/x-yaml; charset=utf-8",
+        "Content-Disposition": `attachment; filename="${rule}.yaml"`,
+      },
+    });
+  } catch (error) {
+    return new Response(
+      `Error fetching rule ${rule}\n\n${(error as Error).message}`,
+      {
+        status: 500,
+      }
+    );
+  }
 }
