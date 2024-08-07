@@ -3,23 +3,23 @@ import YAML from "yaml";
 export const runtime = "edge";
 
 export async function GET(request: Request): Promise<Response> {
-  const urlParam = new URL(request.url).searchParams.get("url");
+  const proxyParam = new URL(request.url).searchParams.get("proxy");
 
-  if (!urlParam) {
-    return new Response("Missing parameter: url", { status: 400 });
+  if (!proxyParam) {
+    return new Response("Missing parameter: proxy", { status: 400 });
   }
 
-  const url = decodeURIComponent(urlParam);
+  const proxyUrl = decodeURIComponent(proxyParam);
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(proxyUrl, {
       headers: {
         "User-Agent": "ClashX Pro/1.97.0.4",
       },
     });
 
     if (!response.ok) {
-      return new Response(`Failed to fetch from ${url}`, {
+      return new Response(`Failed to fetch from ${proxyUrl}`, {
         status: response.status,
       });
     }
@@ -47,7 +47,7 @@ export async function GET(request: Request): Promise<Response> {
     }
   } catch (fetchError) {
     return new Response(
-      `Unable to fetch from ${url}\n\n${(fetchError as Error).message}`,
+      `Unable to fetch from ${proxyUrl}\n\n${(fetchError as Error).message}`,
       {
         status: 500,
       }
