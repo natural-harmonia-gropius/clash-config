@@ -59,6 +59,12 @@ const ConfigPage = () => {
           <p className="font-mono">winsw install winsw.xml</p>
         </div>
       </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full space-y-4">
+        <div>
+          <a href="/api/wintun" className="text-indigo-600 hover:underline">Download wintun.dll</a>
+        </div>
+      </div>
     </div>
   );
 };
