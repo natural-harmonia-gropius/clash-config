@@ -44,6 +44,12 @@ const ConfigPage = () => {
 
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full space-y-4">
         <div>
+          <a href="/api/mmdb" className="text-indigo-600 hover:underline">Download Country.mmdb</a>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full space-y-4">
+        <div>
           <a href="/api/winsw" className="text-indigo-600 hover:underline">Download WinSW</a>
         </div>
         <div>
