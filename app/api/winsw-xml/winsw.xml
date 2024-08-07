@@ -1,0 +1,6 @@
+<service>
+    <id>Clash</id>
+    <executable>clash</executable>
+    <arguments>-d .</arguments>
+    <log mode="none"></log>
+</service>
