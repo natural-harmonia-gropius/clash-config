@@ -19,9 +19,9 @@ export async function GET(request: Request): Promise<Response> {
       });
     }
 
-    const rulesBlob = await response.blob();
+    const rulesContent = await response.text();
 
-    return new Response(rulesBlob, {
+    return new Response(rulesContent, {
       status: 200,
       headers: {
         "Content-Type": "application/x-yaml; charset=utf-8",

@@ -50,10 +50,10 @@ const ConfigPage = () => {
 
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full space-y-4">
         <div>
-          <a href="/api/winsw" className="text-indigo-600 hover:underline">Download WinSW</a>
+          <a href="/api/winsw" className="text-indigo-600 hover:underline">Download winsw.exe</a>
         </div>
         <div>
-          <a href="/api/winsw-xml" className="text-indigo-600 hover:underline">Download WinSW XML</a>
+          <a href="/api/winsw-xml" className="text-indigo-600 hover:underline">Download winsw.xml</a>
         </div>
         <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <p className="font-mono">winsw install winsw.xml</p>
