@@ -2,7 +2,6 @@ external-controller: localhost:9090
 external-ui: dashboard
 
 mixed-port: 1080
-ipv6: true
 allow-lan: false
 mode: rule
 
@@ -13,19 +12,16 @@ mode: rule
 #   auto-redir: true
 #   auto-detect-interface: true
 
-# dns:
-#   enable: true
-#   listen: localhost:53
-#   ipv6: true
-#   default-nameserver:
-#     - "[2402:4e00::]:53"
-#     - 119.29.29.29
-#   nameserver:
-#     - https://doh.pub/dns-query
-#     - https://dns.alidns.com/dns-query
-#   fallback:
-#     - https://cloudflare-dns.com/dns-query
-#     - https://dns.google/dns-query
+dns:
+  enable: true
+  default-nameserver:
+    - 119.29.29.29
+    - 223.5.5.5
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    - https://cloudflare-dns.com/dns-query
+    - https://dns.google/dns-query
 
 proxy-providers:
   proxy:
