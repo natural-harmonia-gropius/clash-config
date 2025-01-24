@@ -14,7 +14,7 @@ export async function GET(request: Request): Promise<Response> {
   try {
     const response = await fetch(proxyUrl, {
       headers: {
-        "User-Agent": "ClashX Pro/1.97.0.4",
+        "User-Agent": "Clash/v1.18.0",
       },
     });
 
