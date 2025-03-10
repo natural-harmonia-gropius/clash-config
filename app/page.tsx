@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const ConfigPage = () => {
+export default function Home() {
   const [proxy, setProxy] = useState("");
   const [url, setUrl] = useState("");
 
@@ -66,6 +66,4 @@ const ConfigPage = () => {
       </div>
     </div>
   );
-};
-
-export default ConfigPage;
+}
