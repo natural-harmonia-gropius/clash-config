@@ -4,34 +4,28 @@ export const runtime = "edge";
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const proxy = url.searchParams.get("proxy");
 
+  const proxy = url.searchParams.get("proxy");
   if (!proxy) {
     return new Response("Missing parameter: proxy", { status: 400 });
   }
 
   url.pathname = "/config.yaml";
   const response = await fetch(url);
-
   if (!response.ok) {
-    return new Response(`Failed to fetch config.yaml: ${response.statusText}`, {
-      status: response.status,
-    });
+    return new Response("Missing file: config.yaml", { status: 404 });
   }
 
-  const yamlContent = await response.text();
-  const updatedYamlContent = updateYamlContent(yamlContent, url, proxy);
+  const head = await fetch(proxy, { method: "HEAD" });
+  const headers = Object.fromEntries(head.headers.entries());
 
-  return new Response(updatedYamlContent, {
-    status: 200,
-    headers: {
-      "Content-Type": "application/x-yaml; charset=utf-8",
-      "Content-Disposition": `attachment; filename="config.yaml"`,
-    },
-  });
+  const content = await response.text();
+  const updatedContent = updateContent(content, url, proxy);
+
+  return new Response(updatedContent, { status: 200, headers });
 }
 
-function updateYamlContent(yamlContent: string, url: URL, proxy: string) {
+function updateContent(yamlContent: string, url: URL, proxy: string) {
   const config = YAML.parse(yamlContent);
 
   url.pathname = "/api/proxy-provider";
