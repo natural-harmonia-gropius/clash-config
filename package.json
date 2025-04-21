@@ -2,10 +2,10 @@
   "name": "clash-config",
   "version": "1.0.0",
   "scripts": {
-    "build": "next build",
     "dev": "next dev --turbopack",
-    "lint": "next lint",
-    "start": "next start"
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "^15",
