@@ -1,6 +1,6 @@
 {
-  "name": "clash",
-  "version": "0.1.0",
+  "name": "clash-config",
+  "version": "1.0.0",
   "scripts": {
     "build": "next build",
     "dev": "next dev --turbopack",
