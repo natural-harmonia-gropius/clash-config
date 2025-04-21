@@ -4,29 +4,41 @@ export const runtime = "edge";
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-
   const proxy = url.searchParams.get("proxy");
+
   if (!proxy) {
     return new Response("Missing parameter: proxy", { status: 400 });
   }
 
-  url.pathname = "/config.yaml";
-  const response = await fetch(url);
+  const proxyUrl = decodeURIComponent(proxy);
+
+  const head = await fetch(proxyUrl, {
+    method: "HEAD",
+    headers: {
+      "User-Agent": "Clash/v1.18.0",
+    },
+  });
+
+  if (!head.ok) {
+    return new Response(
+      `Failed to fetch ${proxyUrl}: ${head.status} ${head.statusText}`,
+      { status: 404 }
+    );
+  }
+
+  const response = await fetch(new URL("/config.yaml", request.url));
   if (!response.ok) {
     return new Response("Missing file: config.yaml", { status: 404 });
   }
 
-  const head = await fetch(proxy, { method: "HEAD" });
-  const headers = Object.fromEntries(head.headers.entries());
-
   const content = await response.text();
   const updatedContent = updateContent(content, url, proxy);
 
-  return new Response(updatedContent, { status: 200, headers });
+  return new Response(updatedContent, { status: 200, headers: head.headers });
 }
 
-function updateContent(yamlContent: string, url: URL, proxy: string) {
-  const config = YAML.parse(yamlContent);
+function updateContent(content: string, url: URL, proxy: string) {
+  const config = YAML.parse(content);
 
   url.pathname = "/api/proxy-provider";
   url.search = `?proxy=${encodeURIComponent(proxy)}`;

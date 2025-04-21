@@ -8,32 +8,22 @@ export async function GET(request: Request): Promise<Response> {
     return new Response("Missing parameter: rule", { status: 400 });
   }
 
-  try {
-    const response = await fetch(
-      `https://github.com/Loyalsoldier/clash-rules/releases/latest/download/${rule}.txt`
-    );
+  const response = await fetch(
+    `https://github.com/Loyalsoldier/clash-rules/releases/latest/download/${rule}.txt`
+  );
 
-    if (!response.ok) {
-      return new Response(`Failed to fetch ${rule}.txt`, {
-        status: response.status,
-      });
-    }
-
-    const rulesContent = await response.text();
-
-    return new Response(rulesContent, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/x-yaml; charset=utf-8",
-        "Content-Disposition": `attachment; filename="${rule}.yaml"`,
-      },
-    });
-  } catch (error) {
+  if (!response.ok) {
     return new Response(
-      `Error fetching rule ${rule}\n\n${(error as Error).message}`,
-      {
-        status: 500,
-      }
+      `Failed to fetch ${rule}.txt: ${response.status} ${response.statusText}`,
+      { status: response.status }
     );
   }
+
+  return new Response(response.body, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/x-yaml; charset=utf-8",
+      "Content-Disposition": `attachment; filename="${rule}.yaml"`,
+    },
+  });
 }
