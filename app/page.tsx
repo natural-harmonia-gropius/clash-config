@@ -1,18 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FiCheck, FiCopy, FiDownload } from "react-icons/fi";
+import { FaAndroid, FaApple, FaLinux, FaWindows } from "react-icons/fa6";
+import { FiCheck, FiCopy } from "react-icons/fi";
 
 const baseStyles = {
-  button:
-    "inline-flex items-center justify-center border focus:outline-none focus:ring-0",
+  button: "items-center justify-center border focus:outline-none focus:ring-0",
   input: "block w-full border focus:outline-none text-base md:text-lg truncate",
   transition: "transition-all duration-200 ease-in-out",
 } as const;
 
 const componentStyles = {
   input: `${baseStyles.input} px-6 py-3.5 md:py-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-full placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500`,
-  downloadButton: `${baseStyles.button} py-2.5 md:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base font-medium gap-2 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50`,
+  downloadButton: `${baseStyles.button} inline-flex flex-row items-center py-2.5 md:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base font-medium gap-2 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50`,
   iconButton: `${baseStyles.button} grid place-items-center rounded-lg ${baseStyles.transition}`,
   urlDisplay:
     "flow-root mt-4 md:mt-6 p-3.5 md:p-5 bg-gray-200 dark:bg-gray-800/50 rounded-3xl border border-gray-300 dark:border-gray-600 relative break-all",
@@ -84,7 +84,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-[30vh]">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-64 pb-16">
       <div className="w-full max-w-4xl px-4 mx-auto">
         <header className="mb-6 md:mb-8">
           <h1 className="text-xl sm:text-2xl font-extrabold text-center md:text-left text-gray-800 dark:text-gray-100 md:text-5xl">
@@ -153,15 +153,85 @@ export default function Home() {
               </div>
             )}
           </section>
-          <section className="flex flex-col sm:flex-row gap-3 sm:gap-6">
-            <a href="/api/mmdb" className={componentStyles.downloadButton}>
-              <FiDownload size={18} />
-              <span>MMDB</span>
-            </a>
-            <a href="/api/wintun" className={componentStyles.downloadButton}>
-              <FiDownload size={18} />
-              <span>wintun.dll</span>
-            </a>
+          <section className="grid gap-4 md:gap-6">
+            <div className="flex flex-wrap gap-4 md:gap-6">
+              <a
+                href="/api/clash?os=android-arm64-v8a.apk"
+                className={componentStyles.downloadButton}
+              >
+                <FaAndroid size={18} />
+                <span>Android ARMv8</span>
+              </a>
+              <a
+                href="/api/clash?os=android-armeabi-v7a.apk"
+                className={componentStyles.downloadButton}
+              >
+                <FaAndroid size={18} />
+                <span>Android ARMv7</span>
+              </a>
+              <a
+                href="/api/clash?os=android-x86_64.apk"
+                className={componentStyles.downloadButton}
+              >
+                <FaAndroid size={18} />
+                <span>Android x64</span>
+              </a>
+            </div>
+            <div className="flex flex-wrap gap-4 md:gap-6">
+              <a
+                href="/api/clash?os=windows-amd64-setup.exe"
+                className={componentStyles.downloadButton}
+              >
+                <FaWindows size={18} />
+                <span>Windows</span>
+              </a>
+              <a
+                href="/api/clash?os=windows-arm64-setup.exe"
+                className={componentStyles.downloadButton}
+              >
+                <FaWindows size={18} />
+                <span>Windows ARM</span>
+              </a>
+            </div>
+            <div className="flex flex-wrap gap-4 md:gap-6">
+              <a
+                href="/api/clash?os=macos-arm64.dmg"
+                className={componentStyles.downloadButton}
+              >
+                <FaApple size={18} />
+                <span>macOS</span>
+              </a>
+              <a
+                href="/api/clash?os=macos-amd64.dmg"
+                className={componentStyles.downloadButton}
+              >
+                <FaApple size={18} />
+                <span>macOS Intel</span>
+              </a>
+            </div>
+            <div className="flex flex-wrap gap-4 md:gap-6">
+              <a
+                href="/api/clash?os=linux-amd64.AppImage"
+                className={componentStyles.downloadButton}
+              >
+                <FaLinux size={18} />
+                <span>Linux AppImage</span>
+              </a>
+              <a
+                href="/api/clash?os=linux-amd64.deb"
+                className={componentStyles.downloadButton}
+              >
+                <FaLinux size={18} />
+                <span>Linux Deb</span>
+              </a>
+              <a
+                href="/api/clash?os=linux-amd64.rpm"
+                className={componentStyles.downloadButton}
+              >
+                <FaLinux size={18} />
+                <span>Linux Rpm</span>
+              </a>
+            </div>
           </section>
         </main>
       </div>
