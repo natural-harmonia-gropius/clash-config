@@ -5,13 +5,17 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1",
     "next": "^15",
     "react": "^19",
     "react-dom": "^19",
-    "react-icons": "^5.5.0",
+    "react-icons": "^5",
     "yaml": "^2"
   },
   "devDependencies": {
@@ -23,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "^15",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4"
   }
 }
