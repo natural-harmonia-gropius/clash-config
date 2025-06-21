@@ -4,15 +4,15 @@ export const runtime = "edge";
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const proxy = url.searchParams.get("proxy");
+  const searchParamUrl = url.searchParams.get("url");
 
-  if (!proxy) {
-    return new Response("Missing parameter: proxy", { status: 400 });
+  if (!searchParamUrl) {
+    return new Response("Missing parameter: url", { status: 400 });
   }
 
-  const proxyUrl = decodeURIComponent(proxy);
+  const configUrl = decodeURIComponent(searchParamUrl);
 
-  const head = await fetch(proxyUrl, {
+  const head = await fetch(configUrl, {
     method: "HEAD",
     headers: {
       "User-Agent": "Clash/v1.18.0",
@@ -21,7 +21,7 @@ export async function GET(request: Request): Promise<Response> {
 
   if (!head.ok) {
     return new Response(
-      `Failed to fetch ${proxyUrl}: ${head.status} ${head.statusText}`,
+      `Failed to fetch ${configUrl}: ${head.status} ${head.statusText}`,
       { status: 404 }
     );
   }
@@ -32,7 +32,7 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const content = await response.text();
-  const updatedContent = updateContent(content, url, proxy);
+  const updatedContent = updateContent(content, url, searchParamUrl);
 
   return new Response(updatedContent, { status: 200, headers: head.headers });
 }
@@ -41,7 +41,7 @@ function updateContent(content: string, url: URL, proxy: string) {
   const config = YAML.parse(content);
 
   url.pathname = "/api/proxy-provider";
-  url.search = `?proxy=${encodeURIComponent(proxy)}`;
+  url.search = `?url=${encodeURIComponent(proxy)}`;
   config["proxy-providers"].proxy.url = url.toString();
 
   url.pathname = "/api/rule-provider";

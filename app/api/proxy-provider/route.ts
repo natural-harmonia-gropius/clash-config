@@ -4,15 +4,15 @@ export const runtime = "edge";
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const proxy = url.searchParams.get("proxy");
+  const searchParamUrl = url.searchParams.get("url");
 
-  if (!proxy) {
-    return new Response("Missing parameter: proxy", { status: 400 });
+  if (!searchParamUrl) {
+    return new Response("Missing parameter: url", { status: 400 });
   }
 
-  const proxyUrl = decodeURIComponent(proxy);
+  const configUrl = decodeURIComponent(searchParamUrl);
 
-  const response = await fetch(proxyUrl, {
+  const response = await fetch(configUrl, {
     headers: {
       "User-Agent": "Clash/v1.18.0",
     },
@@ -20,7 +20,7 @@ export async function GET(request: Request): Promise<Response> {
 
   if (!response.ok) {
     return new Response(
-      `Failed to fetch ${proxyUrl}: ${response.status} ${response.statusText}`,
+      `Failed to fetch ${configUrl}: ${response.status} ${response.statusText}`,
       { status: response.status }
     );
   }
