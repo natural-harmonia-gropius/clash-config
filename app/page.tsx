@@ -4,20 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { FaAndroid, FaApple, FaLinux, FaWindows } from "react-icons/fa6";
 import { FiCheck, FiCopy } from "react-icons/fi";
 
-const baseStyles = {
-  button: "items-center justify-center border focus:outline-none focus:ring-0",
-  input: "block w-full border focus:outline-none text-base md:text-lg truncate",
-  transition: "transition-all duration-200 ease-in-out",
-} as const;
-
-const componentStyles = {
-  input: `${baseStyles.input} px-6 py-3.5 md:py-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-full placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500`,
-  downloadButton: `${baseStyles.button} inline-flex flex-row items-center py-2.5 md:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base font-medium gap-2 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50`,
-  iconButton: `${baseStyles.button} grid place-items-center rounded-lg ${baseStyles.transition}`,
-  urlDisplay:
-    "flow-root mt-4 md:mt-6 p-3.5 md:p-5 bg-gray-200 dark:bg-gray-800/50 rounded-3xl border border-gray-300 dark:border-gray-600 relative break-all",
-} as const;
-
 function useCopy(duration = 1000) {
   const [copied, setCopied] = useState(false);
 
@@ -37,6 +23,27 @@ function useCopy(duration = 1000) {
   );
 
   return { copied, copy };
+}
+
+// 下载按钮组件
+function DownloadButton({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <a
+      href={href}
+      className="items-center justify-center border focus:outline-none focus:ring-0 inline-flex flex-row items-center py-2.5 md:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base font-medium gap-2 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+    >
+      {icon}
+      <span>{label}</span>
+    </a>
+  );
 }
 
 export default function Home() {
@@ -83,6 +90,80 @@ export default function Home() {
     }
   };
 
+  // 下载项数据
+  const downloadGroups = [
+    {
+      key: "android",
+      items: [
+        {
+          href: "/api/clash?os=android-arm64-v8a.apk",
+          icon: <FaAndroid size={18} />,
+          label: "Android ARMv8",
+        },
+        {
+          href: "/api/clash?os=android-armeabi-v7a.apk",
+          icon: <FaAndroid size={18} />,
+          label: "Android ARMv7",
+        },
+        {
+          href: "/api/clash?os=android-x86_64.apk",
+          icon: <FaAndroid size={18} />,
+          label: "Android x64",
+        },
+      ],
+    },
+    {
+      key: "windows",
+      items: [
+        {
+          href: "/api/clash?os=windows-amd64-setup.exe",
+          icon: <FaWindows size={18} />,
+          label: "Windows",
+        },
+        {
+          href: "/api/clash?os=windows-arm64-setup.exe",
+          icon: <FaWindows size={18} />,
+          label: "Windows ARM",
+        },
+      ],
+    },
+    {
+      key: "mac",
+      items: [
+        {
+          href: "/api/clash?os=macos-arm64.dmg",
+          icon: <FaApple size={18} />,
+          label: "macOS",
+        },
+        {
+          href: "/api/clash?os=macos-amd64.dmg",
+          icon: <FaApple size={18} />,
+          label: "macOS Intel",
+        },
+      ],
+    },
+    {
+      key: "linux",
+      items: [
+        {
+          href: "/api/clash?os=linux-amd64.AppImage",
+          icon: <FaLinux size={18} />,
+          label: "Linux AppImage",
+        },
+        {
+          href: "/api/clash?os=linux-amd64.deb",
+          icon: <FaLinux size={18} />,
+          label: "Linux Deb",
+        },
+        {
+          href: "/api/clash?os=linux-amd64.rpm",
+          icon: <FaLinux size={18} />,
+          label: "Linux Rpm",
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-64 pb-16">
       <div className="w-full max-w-4xl px-4 mx-auto">
@@ -105,9 +186,9 @@ export default function Home() {
                   onChange={handleProxyChange}
                   required
                   placeholder="Enter subscription link"
-                  className={`${componentStyles.input} ${
+                  className={`block w-full border focus:outline-none text-base md:text-lg truncate px-6 py-3.5 md:py-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-full placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500${
                     error
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                      ? " border-red-500 focus:border-red-500 focus:ring-red-500"
                       : ""
                   }`}
                 />
@@ -119,12 +200,10 @@ export default function Home() {
               </div>
             </form>
             {url && (
-              <div className={componentStyles.urlDisplay}>
+              <div className="flow-root mt-4 md:mt-6 p-3.5 md:p-5 bg-gray-200 dark:bg-gray-800/50 rounded-3xl border border-gray-300 dark:border-gray-600 relative break-all">
                 <button
                   onClick={handleCopy}
-                  className={`${
-                    componentStyles.iconButton
-                  } float-right ml-2 w-8 h-8 ${
+                  className={`items-center justify-center border focus:outline-none focus:ring-0 grid place-items-center rounded-lg transition-all duration-200 ease-in-out float-right ml-2 w-8 h-8 ${
                     copied
                       ? "bg-blue-100 dark:bg-blue-900/50 border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-300"
                       : "bg-gray-100 dark:bg-gray-800/90 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/90"
@@ -132,14 +211,14 @@ export default function Home() {
                 >
                   <div className="relative w-5 h-5">
                     <div
-                      className={`absolute inset-0 ${baseStyles.transition} ${
+                      className={`absolute inset-0 transition-all duration-200 ease-in-out ${
                         copied ? "opacity-100 scale-100" : "opacity-0 scale-50"
                       }`}
                     >
                       <FiCheck size={20} />
                     </div>
                     <div
-                      className={`absolute inset-0 ${baseStyles.transition} ${
+                      className={`absolute inset-0 transition-all duration-200 ease-in-out ${
                         copied ? "opacity-0 scale-50" : "opacity-100 scale-100"
                       }`}
                     >
@@ -154,84 +233,13 @@ export default function Home() {
             )}
           </section>
           <section className="grid gap-4 md:gap-6">
-            <div className="flex flex-wrap gap-4 md:gap-6">
-              <a
-                href="/api/clash?os=android-arm64-v8a.apk"
-                className={componentStyles.downloadButton}
-              >
-                <FaAndroid size={18} />
-                <span>Android ARMv8</span>
-              </a>
-              <a
-                href="/api/clash?os=android-armeabi-v7a.apk"
-                className={componentStyles.downloadButton}
-              >
-                <FaAndroid size={18} />
-                <span>Android ARMv7</span>
-              </a>
-              <a
-                href="/api/clash?os=android-x86_64.apk"
-                className={componentStyles.downloadButton}
-              >
-                <FaAndroid size={18} />
-                <span>Android x64</span>
-              </a>
-            </div>
-            <div className="flex flex-wrap gap-4 md:gap-6">
-              <a
-                href="/api/clash?os=windows-amd64-setup.exe"
-                className={componentStyles.downloadButton}
-              >
-                <FaWindows size={18} />
-                <span>Windows</span>
-              </a>
-              <a
-                href="/api/clash?os=windows-arm64-setup.exe"
-                className={componentStyles.downloadButton}
-              >
-                <FaWindows size={18} />
-                <span>Windows ARM</span>
-              </a>
-            </div>
-            <div className="flex flex-wrap gap-4 md:gap-6">
-              <a
-                href="/api/clash?os=macos-arm64.dmg"
-                className={componentStyles.downloadButton}
-              >
-                <FaApple size={18} />
-                <span>macOS</span>
-              </a>
-              <a
-                href="/api/clash?os=macos-amd64.dmg"
-                className={componentStyles.downloadButton}
-              >
-                <FaApple size={18} />
-                <span>macOS Intel</span>
-              </a>
-            </div>
-            <div className="flex flex-wrap gap-4 md:gap-6">
-              <a
-                href="/api/clash?os=linux-amd64.AppImage"
-                className={componentStyles.downloadButton}
-              >
-                <FaLinux size={18} />
-                <span>Linux AppImage</span>
-              </a>
-              <a
-                href="/api/clash?os=linux-amd64.deb"
-                className={componentStyles.downloadButton}
-              >
-                <FaLinux size={18} />
-                <span>Linux Deb</span>
-              </a>
-              <a
-                href="/api/clash?os=linux-amd64.rpm"
-                className={componentStyles.downloadButton}
-              >
-                <FaLinux size={18} />
-                <span>Linux Rpm</span>
-              </a>
-            </div>
+            {downloadGroups.map((group) => (
+              <div className="flex flex-wrap gap-4 md:gap-6" key={group.key}>
+                {group.items.map((item) => (
+                  <DownloadButton key={item.label} {...item} />
+                ))}
+              </div>
+            ))}
           </section>
         </main>
       </div>
