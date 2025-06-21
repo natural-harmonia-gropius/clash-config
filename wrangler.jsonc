@@ -9,5 +9,9 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true
 }
