@@ -1,42 +1,47 @@
+import { handleError, safeFetch } from "@/app/api/utils";
+import { NextRequest, NextResponse } from "next/server";
+
 export const runtime = "edge";
 
-export async function GET(request: Request): Promise<Response> {
-  const url = new URL(request.url);
-  const os = url.searchParams.get("os");
+export async function GET(request: NextRequest): Promise<Response> {
+  try {
+    const url = new URL(request.url);
+    const os = url.searchParams.get("os");
 
-  if (!os) {
-    return new Response("OS parameter is required", { status: 400 });
-  }
+    if (!os) {
+      return NextResponse.json(
+        { error: "OS parameter is required" },
+        { status: 400 }
+      );
+    }
 
-  const response = await fetch(
-    "https://api.github.com/repos/chen08209/FlClash/releases/latest"
-  );
+    const response = await safeFetch(
+      "https://api.github.com/repos/chen08209/FlClash/releases/latest",
+      { next: { revalidate: 3600 } }
+    );
 
-  if (!response.ok) {
-    return new Response("Failed to fetch latest releases", {
-      status: response.status,
+    const release = await response.json();
+    const asset = release.assets.find((asset: { name: string }) =>
+      asset.name.includes(os)
+    );
+
+    if (!asset) {
+      return NextResponse.json(
+        { error: "Release not found for this OS" },
+        { status: 404 }
+      );
+    }
+
+    const download = await safeFetch(asset.browser_download_url);
+
+    return new Response(download.body, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "Content-Disposition": `attachment; filename=${asset.name}`,
+      },
     });
+  } catch (error) {
+    return handleError(error);
   }
-
-  const release = await response.json();
-  const asset = release.assets.find((asset: { name: string }) =>
-    asset.name.includes(os)
-  );
-
-  if (!asset) {
-    return new Response("Release not found for this OS", { status: 404 });
-  }
-
-  const download = await fetch(asset.browser_download_url);
-  if (!download.ok) {
-    return new Response("Failed to download", { status: 500 });
-  }
-
-  return new Response(download.body, {
-    status: 200,
-    headers: {
-      "Content-Type": "application/octet-stream",
-      "Content-Disposition": `attachment; filename=${asset.name}`,
-    },
-  });
 }
